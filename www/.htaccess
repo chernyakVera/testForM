@@ -6,3 +6,8 @@ RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteRule ^(.*)$ ./index.php?route=$1 [QSA,L]
 
 
+<FilesMatch "\.(json)$">
+Order allow,deny
+Deny from all
+
+</FilesMatch>

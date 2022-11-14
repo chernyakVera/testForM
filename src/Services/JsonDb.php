@@ -8,7 +8,7 @@ class JsonDb
 {
     public static function create(User $user)
     {
-        $currentDataFromDb = file_get_contents(__DIR__ . '\jsonDataBase.json');
+        $currentDataFromDb = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json');
         $tempArrayFromDb = json_decode($currentDataFromDb, true);
         $userArray = [
                 'login' => $user->getLogin(),
@@ -20,23 +20,23 @@ class JsonDb
 
         if ($tempArrayFromDb === null) {
             $jsonDataToDb = json_encode($userArray);
-            file_put_contents(__DIR__ . '\jsonDataBase.json', $jsonDataToDb);
+            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json', $jsonDataToDb);
         } else {
             array_push($tempArrayFromDb, $userArray);
             $jsonDataToDb = json_encode($tempArrayFromDb);
-            file_put_contents(__DIR__ . '\jsonDataBase.json', $jsonDataToDb);
+            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json', $jsonDataToDb);
         }
 
     }
 
 
-    public static function read(string $userEmail, string $category): ?string
+    public static function read(string $userLogin, string $category): ?string
     {
-        $currentDataFromDb = file_get_contents(__DIR__ . '\jsonDataBase.json');
+        $currentDataFromDb = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json');
         $tempArrayFromDb = json_decode($currentDataFromDb, true);
 
         foreach ($tempArrayFromDb as $userArray) {
-            if ($userArray['email'] === $userEmail) {
+            if ($userArray['login'] === $userLogin) {
                 $foundValueFromDb = $userArray[$category];
                 return $foundValueFromDb;
             }
@@ -45,17 +45,17 @@ class JsonDb
     }
 
 
-    public static function update(string $userEmail, string $category, string $newValue): ?string
+    public static function update(string $userLogin, string $category, string $newValue): ?string
     {
-        $currentDataFromDb = file_get_contents(__DIR__ . '\jsonDataBase.json');
+        $currentDataFromDb = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json');
         $tempArrayFromDb = json_decode($currentDataFromDb, true);
         $lengthOfTempArray = count($tempArrayFromDb);
 
         for ($index = 0; $index < $lengthOfTempArray; $index++ ) {
-            if ($tempArrayFromDb[$index]['email'] === $userEmail) {
+            if ($tempArrayFromDb[$index]['login'] === $userLogin) {
                 $tempArrayFromDb[$index][$category] = $newValue;
                 $jsonDataToDb = json_encode($tempArrayFromDb);
-                file_put_contents(__DIR__ . '\jsonDataBase.json', $jsonDataToDb);
+                file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json', $jsonDataToDb);
                 return $newValue;
             }
         }
@@ -66,7 +66,7 @@ class JsonDb
 
     public static function isValueExist(string $valueFromPost, string $category): bool
     {
-        $currentDataFromDb = file_get_contents(__DIR__ . '\jsonDataBase.json');
+        $currentDataFromDb = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json');
         $tempArrayFromDb = json_decode($currentDataFromDb, true);
 
         foreach ($tempArrayFromDb as $userArray) {
@@ -81,13 +81,13 @@ class JsonDb
     }
 
 
-    public static function getUserByEmail(string $userEmail): ?array
+    public static function getUserByLogin(string $userLogin): ?array
     {
-        $currentDataFromDb = file_get_contents(__DIR__ . '\jsonDataBase.json');
+        $currentDataFromDb = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json');
         $tempArrayFromDb = json_decode($currentDataFromDb, true);
 
         foreach ($tempArrayFromDb as $userArray) {
-                if ($userArray['email'] === $userEmail) {
+                if ($userArray['login'] === $userLogin) {
                     return $userArray;
                 }
             }
@@ -98,7 +98,7 @@ class JsonDb
 
     public static function getUserByToken(string $authToken): ?array
     {
-        $currentDataFromDb = file_get_contents(__DIR__ . '\jsonDataBase.json');
+        $currentDataFromDb = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'jsonDataBase.json');
         $tempArrayFromDb = json_decode($currentDataFromDb, true);
 
         foreach ($tempArrayFromDb as $userArray) {

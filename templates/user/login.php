@@ -1,25 +1,22 @@
-<!--Шаблон с полями-формами для авторизации пользователя-->
-<?php include __DIR__ . '/../header.php'?>
 
-<!--<script src="https://code.jquery.com/jquery-3.6.1.min.js"-->
-<!--        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>-->
+<?php include __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'header.php'?>
 
 <div style="text-align: center;">
     <h1>Авторизация</h1>
 
     <?php if(empty($_SESSION['name'])): ?>
-    <form action="/users/login" method="post">
+    <form method="post" id="formLogIn">
         <table align="center" class = 'register'>
             <tr>
-                <td>Адрес эл.почты</td>
+                <td>Логин</td>
                 <td>
-                    <input type="text" name="email" class="email"
-                           value="<?= $_POST['email'] ?? '' ?>">
+                    <input type="text" name="login" class="login"
+                           value="<?= $_POST['login'] ?? '' ?>">
                 </td>
                 <td>
-                    <?php if(!empty($emailError)): ?>
-                        <div style="background-color: crimson;"><?=$emailError ?></div>
-                    <?php endif; ?>
+                    <div style="background-color: crimson;">
+                        <span id="loginError"></span>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -29,41 +26,20 @@
                            value="<?= $_POST['password'] ?? '' ?>">
                 </td>
                 <td>
-                    <?php if(!empty($passwordError)): ?>
-                        <div style="background-color: crimson;"><?=$passwordError ?></div>
-                    <?php endif; ?>
+                    <div style="background-color: crimson;">
+                        <span id="passwordError"></span>
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button class="logIn">Войти</button>
+                    <input type="button" name="Submit" value="Войти" onclick="submitLogInForm()">
                 </td>
             </tr>
 
         </table>
         </form>
-<!--    <script>-->
-<!--        $(document).ready(function () {-->
-<!--            $('button.logIn').on('click', function() {-->
-<!--                var emailValue = $('input.email').val();-->
-<!--                var passwordValue = $('input.password').val();-->
-<!---->
-<!--                $.ajax({-->
-<!--                    method: "POST",-->
-<!--                    url: "/users/login",-->
-<!--                    data: { email: emailValue, password: passwordValue }-->
-<!--                })-->
-<!--                    .done(function( msg) {-->
-<!--                        let message = JSON.parse(msg);-->
-<!--                        alert( "Data Saved: " + message.message );-->
-<!--                    });-->
-<!---->
-<!--                $('input.email').val('');-->
-<!--                $('input.password').val('');-->
-<!--            })-->
-<!--        });-->
-<!--    </script>-->
 
     <?php endif;?>
 </div>
-<?php include __DIR__ . '/../footer.php'?>
+<?php include __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'footer.php'?>

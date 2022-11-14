@@ -11,6 +11,6 @@
     <td class="footer" colspan="2">Тестовое задание</td>
 </tr>
 </table>
-
+<script type="text/javascript" src="/actionsAfterClick.js"></script>
 </body>
 </html>

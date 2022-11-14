@@ -23,30 +23,82 @@ class UsersController
             } catch (\Exception $e) {
                 if(preg_match('~[Лл]огин~', $e->getMessage(), $match)) {
                     $loginError = $e->getMessage();
+                    $arr = [
+                        'status' => 'error',
+                        'message' => $loginError,
+                        'type' => 'login',
+                    ];
+                    $loginError = json_encode($arr);
+                    echo $loginError;
+                    exit();
                 }
                 elseif (preg_match('~[Пп]ароль~',$e->getMessage(), $match)) {
                     $passwordError = $e->getMessage();
+                    $arr = [
+                        'status' => 'error',
+                        'message' => $passwordError,
+                        'type' => 'password',
+                    ];
+                    $passwordError = json_encode($arr);
+                    echo $passwordError;
+                    exit();
                 }
                 elseif (preg_match('~[Пп]одтверждение пароля~', $e->getMessage(), $match)) {
                     $confirmPasswordError = $e->getMessage();
+                    $arr = [
+                        'status' => 'error',
+                        'message' => $confirmPasswordError,
+                        'type' => 'confirmPassword',
+                    ];
+                    $confirmPasswordError = json_encode($arr);
+                    echo $confirmPasswordError;
+                    exit();
                 }
                 elseif (preg_match('~почт~', $e->getMessage(), $match)) {
                     $emailError = $e->getMessage();
+                    $arr = [
+                        'status' => 'error',
+                        'message' => $emailError,
+                        'type' => 'email',
+                    ];
+                    $emailError = json_encode($arr);
+                    echo $emailError;
+                    exit();
                 }
                 elseif (preg_match('~[Ии]мя~', $e->getMessage(), $match)) {
                     $nameError = $e->getMessage();
+                    $arr = [
+                        'status' => 'error',
+                        'message' => $nameError,
+                        'type' => 'name',
+                    ];
+                    $nameError = json_encode($arr);
+                    echo $nameError;
+                    exit();
                 }
-                require __DIR__ . '/../../templates/user/signUp.php';
+                require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                                . 'templates' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'signUp.php';
                 exit();
             }
         } else {
-            require __DIR__ . '/../../templates/user/signUp.php';
+            require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                            . 'templates' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'signUp.php';
             exit();
         }
-        require __DIR__ . '/../../templates/user/signUpSuccess.php';
-        exit();
+        $arr = [
+            'status' => 'success',
+            'message' => '/signUpSuccess',
+        ];
+        $statusSuccess = json_encode($arr);
+        echo  $statusSuccess;
     }
 
+
+    public function signUpSuccess()
+    {
+        require __DIR__ . DIRECTORY_SEPARATOR .'..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                        . 'templates' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'signUpSuccess.php';
+    }
 
 
     public function logIn()
@@ -55,27 +107,47 @@ class UsersController
             try {
                 $user = User::logIn($_POST);
             } catch (\Exception $e) {
-                if(preg_match('~[Аа]дрес~', $e->getMessage(), $match)) {
-                    $emailError = $e->getMessage();
-                    require __DIR__ . '/../../templates/user/login.php';
+                if(preg_match('~[Лл]огин~', $e->getMessage(), $match)) {
+                    $loginError = $e->getMessage();
+                    $arr = [
+                        'status' => 'error',
+                        'message' => $loginError,
+                        'type' => 'login',
+                    ];
+                    $loginError = json_encode($arr);
+                    echo $loginError;
                     exit();
                 }
                 elseif(preg_match('~[Пп]арол~', $e->getMessage(), $match)) {
                     $passwordError = $e->getMessage();
-//                    $arr = [
-//                        'status' => 'error',
-//                        'message' => $passwordError
-//                    ];
-//                    echo json_encode($arr);
-                    require __DIR__ . '/../../templates/user/login.php';
+                    $arr = [
+                        'status' => 'error',
+                        'message' => $passwordError,
+                        'type' => 'password',
+                    ];
+                    $passwordError = json_encode($arr);
+                    echo $passwordError;
                     exit();
                 }
             }
         } else {
-            require __DIR__ . '/../../templates/user/login.php';
+            require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                            . 'templates' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'login.php';
             exit();
         }
-        require __DIR__ . '/../../templates/user/logInSuccess.php';
+        $arr = [
+            'status' => 'success',
+            'message' => '/logInSuccess',
+        ];
+        $statusSuccess = json_encode($arr);
+        echo $statusSuccess;
+    }
+
+
+    public function logInSuccess()
+    {
+        require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                        . 'templates' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'logInSuccess.php';
     }
 
 

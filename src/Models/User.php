@@ -102,7 +102,7 @@ class User
         } else {
             preg_match('~[a-zA-Z]+~', $fieldsFromForm['password'], $matchLetters);
             preg_match('~\d+~', $fieldsFromForm['password'], $matchDigits);
-            preg_match('~\s+~', $fieldsFromForm['password'], $matchSpaces);
+            preg_match('~[^\w]+~', $fieldsFromForm['password'], $matchSpecialCharacter);
 
             if(strlen($fieldsFromForm['password']) < 6) {
                 throw new \Exception('Пароль должен быть длиной минимум 6 символов.');
@@ -111,8 +111,8 @@ class User
             elseif (!empty($matchLetters) && empty($matchDigits) || empty($matchLetters) && !empty($matchDigits)) {
                 throw new \Exception('Пароль дожен состоять только из букв латинского алфавита и цифр.');
             }
-            elseif (!empty($matchSpaces)) {
-                throw new \Exception('Пароль не должен содержать пробелы.');
+            elseif (!empty($matchSpecialCharacter)) {
+                throw new \Exception('Пароль не должен содержать специальные символы.');
             }
         }
 
@@ -155,7 +155,6 @@ class User
 
         JsonDb::create($user);
 
-//        return $user;
     }
 
 
@@ -164,11 +163,11 @@ class User
 
     public static function logIn($fieldsFromForm): User
     {
-        if(empty($fieldsFromForm['email'])) {
-            throw new \Exception('Введите адрес эл.почты.');
+        if(empty($fieldsFromForm['login'])) {
+            throw new \Exception('Введите логин');
         } else {
-            if(JsonDb::read($fieldsFromForm['email'], 'email') === null) {
-                throw new \Exception('Пользователя с таким адресом эл.почты не существует.');
+            if(JsonDb::read($fieldsFromForm['login'], 'login') === null) {
+                throw new \Exception('Пользователя с таким логином не существует.');
             }
         }
 
@@ -177,13 +176,13 @@ class User
         } else {
             $password = $fieldsFromForm['password'];
             $encodedPassword = sha1(self::SALT.$password);
-            $passwordFromDb = JsonDb::read($fieldsFromForm['email'], 'password');
+            $passwordFromDb = JsonDb::read($fieldsFromForm['login'], 'password');
             if($encodedPassword !== $passwordFromDb) {
                 throw new \Exception('Неверный пароль');
             }
         }
 
-        $authorizedUser = JsonDb::getUserByEmail($fieldsFromForm['email']);
+        $authorizedUser = JsonDb::getUserByLogin($fieldsFromForm['login']);
 
         $user = new User();
         $user->setEmail($authorizedUser['email']);
@@ -194,7 +193,7 @@ class User
         $user->createToken();
 
         $_SESSION['name'] = $user->getName();
-        $_SESSION['email'] = $user->getEmail();
+        $_SESSION['login'] = $user->getLogin();
 
         return $user;
 
@@ -204,7 +203,7 @@ class User
     private function refreshAuthToken(): ?string
     {
         $newValue = sha1(random_bytes(100)) . sha1(random_bytes(100));
-        $result = JsonDb::update($this->getEmail(), 'authToken', $newValue);
+        $result = JsonDb::update($this->getLogin(), 'authToken', $newValue);
         return $result;
     }
 
@@ -222,8 +221,8 @@ class User
         $authorizedUser = null;
         $methodOfLogin = null;
 
-        if(isset($_SESSION['email'])) {
-            $authorizedUser = JsonDb::getUserByEmail($_SESSION['email']);
+        if(isset($_SESSION['login'])) {
+            $authorizedUser = JsonDb::getUserByLogin($_SESSION['login']);
             $methodOfLogin = 'session';
         } else {
             $token = $_COOKIE['token'] ?? '';
@@ -235,9 +234,9 @@ class User
             return null;
         } else {
             $user = new User();
-            $user->setEmail($authorizedUser['email']);
-            $user->setPassword($authorizedUser['password']);
             $user->setLogin($authorizedUser['login']);
+            $user->setPassword($authorizedUser['password']);
+            $user->setEmail($authorizedUser['email']);
             $user->setName($authorizedUser['name']);
             $user->setAuthToken($authorizedUser['authToken']);
         }
@@ -246,7 +245,7 @@ class User
             setcookie('token', $user->getAuthToken());
         } elseif ($methodOfLogin === 'cookie') {
             $_SESSION['name'] = $user->getName();
-            $_SESSION['email'] = $user->getEmail();
+            $_SESSION['login'] = $user->getLogin();
         }
 
         return $user;

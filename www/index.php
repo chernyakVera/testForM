@@ -4,11 +4,11 @@ session_start();
 
 try {
     spl_autoload_register(function (string $className) {
-        require_once __DIR__ . '/../' . $className . '.php';
+        require_once __DIR__ . DIRECTORY_SEPARATOR .'..' . DIRECTORY_SEPARATOR  . $className . '.php';
     });
 
     $route = $_GET['route'] ?? '';
-    $routes = require __DIR__ . '/../src/routes.php';
+    $routes = require __DIR__ . DIRECTORY_SEPARATOR .'..' . DIRECTORY_SEPARATOR .'src' . DIRECTORY_SEPARATOR . 'routes.php';
 
     $isRouteFound = false;
     foreach ($routes as $pattern => $controllerAndAction) {
@@ -20,7 +20,7 @@ try {
     }
 
     if (!$isRouteFound) {
-        throw new \Exception();
+        throw new \Exception('Такой страницы не существует.');
     }
 
     unset($matches[0]);
@@ -32,7 +32,8 @@ try {
     $controller->$actionName(...$matches);
 }
 catch (\Exception $e) {
-    require __DIR__ . '/../templates/user/signUp.php';
+    $error = $e->getMessage();
+    require __DIR__ . DIRECTORY_SEPARATOR .'..' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'notFound.php';
 }
 
 $c = 1;
